@@ -1,0 +1,100 @@
+﻿<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ScrollEvents Demo</title>
+    <link rel="stylesheet" href="../src/scroll-events.css" />    
+  </head>
+  <body>
+    <div class="wrap">
+      <h1 class="page_title a11y">scroll component</h1>
+      <section class="section hero">
+        <div class="text_box">
+          <h2 class="title">ScrollEvents Demo</h2>
+          <p>아래로 스크롤하면 각 카드에 지정한 효과가 실행됩니다.</p>
+        </div>
+      </section>
+      <section class="section">
+        <div class="card" data-scroll="true">
+          <h1>data-scroll="true"</h1>
+          <p>기본 fade 효과로 진입합니다.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="card" data-scroll="slide-left" data-scroll-delay="100">
+          <h2>slide-left</h2>
+          <p>왼쪽에서 들어오는 효과입니다.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="card" data-scroll="slide-right" data-scroll-duration="900">
+          <h2>slide-right</h2>
+          <p>오른쪽에서 들어오는 효과입니다.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="card" data-scroll="zoom-in" data-scroll-once="false">
+          <h2>zoom-in (repeat)</h2>
+          <p>나갔다 다시 들어오면 재실행됩니다.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="card" data-scroll-effect="pop" data-scroll-duration="720">
+          <h2>custom effect: pop</h2>
+          <p>외부에서 등록한 커스텀 이벤트 효과입니다.</p>
+          <span class="chip">data-scroll-effect="pop"</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="fx-grid">
+          <div class="card" data-scroll-effect="tilt-left" data-scroll-delay="80" data-scroll-duration="720">
+            <h2>tilt-left</h2>
+            <p>왼쪽 3D 틸트로 들어오는 효과</p>
+            <span class="chip">data-scroll-effect="tilt-left"</span>
+          </div>
+
+          <div class="card" data-scroll-effect="tilt-right" data-scroll-delay="120" data-scroll-duration="720">
+            <h2>tilt-right</h2>
+            <p>오른쪽 3D 틸트로 들어오는 효과</p>
+            <span class="chip">data-scroll-effect="tilt-right"</span>
+          </div>
+
+          <div class="card" data-scroll-effect="spin-up" data-scroll-duration="1020">
+            <h2>spin-up</h2>
+            <p>회전 + 상승 조합 진입 효과</p>
+            <span class="chip">data-scroll-effect="spin-up"</span>
+          </div>
+
+          <div class="card" data-scroll-effect="glass-rise" data-scroll-duration="1080">
+            <h2>glass-rise</h2>
+            <p>블러가 사라지며 떠오르는 효과</p>
+            <span class="chip">data-scroll-effect="glass-rise"</span>
+          </div>
+
+          <div class="card" data-scroll-effect="punch" data-scroll-delay="60" data-scroll-duration="720">
+            <h2>punch</h2>
+            <p>작게 시작해서 또렷하게 튀어나오는 효과</p>
+            <span class="chip">data-scroll-effect="punch"</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="../src/scroll-events.js"></script>
+    <script>
+      const scroll = window.ScrollEvents.create({
+        once: false,
+        resetOnLeave: "both",
+        threshold: 0.12,
+      });
+
+      scroll.init();
+    </script>
+  </body>
+</html>
