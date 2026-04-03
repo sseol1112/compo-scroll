@@ -1,4 +1,4 @@
-name: Deploy GitHub Pages
+﻿name: Deploy GitHub Pages
 
 on:
   push:
@@ -27,6 +27,11 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
+      - name: Prepare demo assets
+        run: |
+          cp src/scroll-events.css demo/scroll-events.css
+          cp src/scroll-events.js demo/scroll-events.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
