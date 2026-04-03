@@ -74,12 +74,12 @@ p {
 
 .se-slide-left {
   opacity: 0;
-  transform: translateX(-48px);
+  transform: translateX(-999px);
 }
 
 .se-slide-right {
   opacity: 0;
-  transform: translateX(48px);
+  transform: translateX(999px);
 }
 
 .se-slide-in {
@@ -95,7 +95,7 @@ p {
 
 .se-zoom-in-active {
   opacity: 1;
-  transform: scale(1);
+  transform: scale(1.2);
   filter: blur(0);
 }
 
