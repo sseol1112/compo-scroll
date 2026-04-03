@@ -4,7 +4,45 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ScrollEvents Demo</title>
-    <link rel="stylesheet" href="./scroll-events.css" />    
+    <script>
+      // 로컬/배포 환경 모두 대응: 첫 경로 실패 시 다음 경로로 자동 폴백
+      window.__loadWithFallback = function (type, paths) {
+        return new Promise((resolve, reject) => {
+          let index = 0;
+          const tryLoad = () => {
+            if (index >= paths.length) {
+              reject(new Error(type + " resource load failed"));
+              return;
+            }
+
+            const path = paths[index++];
+            if (type === "css") {
+              const link = document.createElement("link");
+              link.rel = "stylesheet";
+              link.href = path;
+              link.onload = () => resolve(path);
+              link.onerror = tryLoad;
+              document.head.appendChild(link);
+              return;
+            }
+
+            const script = document.createElement("script");
+            script.src = path;
+            script.onload = () => resolve(path);
+            script.onerror = tryLoad;
+            document.head.appendChild(script);
+          };
+
+          tryLoad();
+        });
+      };
+    </script>
+    <script>
+      window.__scrollAssetsReady = Promise.all([
+        window.__loadWithFallback("css", ["./scroll-events.css", "../src/scroll-events.css"]),
+        window.__loadWithFallback("js", ["./scroll-events.js", "../src/scroll-events.js"]),
+      ]);
+    </script>
   </head>
   <body>
     <div class="wrap">
@@ -86,15 +124,21 @@
       </section>
     </div>
 
-    <script src="./scroll-events.js"></script>
     <script>
-      const scroll = window.ScrollEvents.create({
-        once: false,
-        resetOnLeave: "both",
-        threshold: 0.12,
-      });
+      window.__scrollAssetsReady
+        .then(() => {
+          const scroll = window.ScrollEvents.create({
+            once: false,
+            resetOnLeave: "both",
+            threshold: 0.12,
+          });
 
-      scroll.init();
+          scroll.init();
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error("[ScrollEvents] 리소스 로드 실패:", error);
+        });
     </script>
   </body>
 </html>
