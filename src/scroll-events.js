@@ -66,6 +66,8 @@
       this.items = [];
       this.observer = null;
       this.isInitialized = false;
+      // observe 시작 타이밍 제어용 raf id
+      this.observeRafId = null;
       // 요소 이탈 시 스크롤 방향(up/down) 판단용
       this.lastScrollY = window.scrollY || window.pageYOffset || 0;
       this._onIntersect = this._onIntersect.bind(this);
@@ -108,8 +110,13 @@
 
       if (!this.observer) return this;
 
-      this.items.forEach((item) => {
-        this.observer.observe(item.el);
+      // 초기 스타일이 먼저 페인트된 뒤 observe하도록 1프레임 지연
+      if (this.observeRafId) cancelAnimationFrame(this.observeRafId);
+      this.observeRafId = requestAnimationFrame(() => {
+        this.items.forEach((item) => {
+          this.observer.observe(item.el);
+        });
+        this.observeRafId = null;
       });
 
       return this;
@@ -121,8 +128,13 @@
         this.observer.disconnect();
         this.observer = null;
       }
+      if (this.observeRafId) {
+        cancelAnimationFrame(this.observeRafId);
+        this.observeRafId = null;
+      }
 
       this.items.forEach((item) => {
+        if (item.enterRafId) cancelAnimationFrame(item.enterRafId);
         item.el.classList.remove("se-ready", item.effect.initial, item.effect.active);
         item.el.removeAttribute("data-scroll-in");
       });
@@ -198,12 +210,21 @@
 
     // 뷰포트 진입 시 활성 효과 적용
     _enter(item) {
-      item.el.classList.add(item.effect.active);
-      item.el.setAttribute("data-scroll-in", "true");
+      // 같은 프레임 즉시 적용 시 모바일에서 트랜지션이 생략되는 케이스 방지
+      if (item.enterRafId) cancelAnimationFrame(item.enterRafId);
+      item.enterRafId = requestAnimationFrame(() => {
+        item.el.classList.add(item.effect.active);
+        item.el.setAttribute("data-scroll-in", "true");
+        item.enterRafId = null;
+      });
     }
 
     // 뷰포트 이탈 시 활성 효과 해제(반복 실행용)
     _leave(item) {
+      if (item.enterRafId) {
+        cancelAnimationFrame(item.enterRafId);
+        item.enterRafId = null;
+      }
       item.el.classList.remove(item.effect.active);
       item.el.setAttribute("data-scroll-in", "false");
     }
