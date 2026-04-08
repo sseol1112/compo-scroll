@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sample page</title>
+    <style>
+        
+        .container {width:100%; max-width: 1200px; margin: 0 auto; padding: 0 20px;}
+        header {width: 100%; height: 100%; border-bottom: 1px solid #ccc; overflow: hidden; display: flex; justify-content: space-between; align-items: center;}
+        
+        .logo > a {display: block; border-radius: 80px; width: 100%; height: 26px; background: #1791FC; position: relative; color: #fff; padding: 0 10px; text-align: center;}
+        .logo > a::before {content:""; width: 12px; height: 6px; display: block; background: url(../src/img/bubble_arr.png) no-repeat center / 100%; position: absolute; bottom: -5px; left: 10px;}
+        header > nav {margin: auto 0;}
+        header > nav > ul {display: flex; gap: 10px; margin: 10px 0; align-items: center;}
+        header > nav > ul > li > a {display:block; height:26px; border-radius: 80px; background: #F00062; color: #fff; padding: 0 10px; text-align: center; position: relative;}
+        header > nav > ul > li > a::after {content:""; background: url(../src/img/bubble_arr2.png) no-repeat center / 100%; width: 12px; height: 6px; position: absolute; bottom: -5px; right: 10px;}
+        header > nav > ul > li > a:hover {background: #1791FC;}
+        header > nav > ul > li > a:hover::after {background-image: url(../src/img/bubble_arr.png);}
+        
+        footer {width: 100%; background: #000; color: #fff; height: 100px; padding: 120px 20px 0; font-size: 28px; display: flex; justify-content: flex-end; align-items: center; padding: 0 20px; margin-top: 120px;}
+        footer .foot-wrap {display: flex; gap: 10px;}
+        footer .foot-wrap li a {color: #fff; font-size: 18px; line-height: 1; font-weight: 400; }
+    
+        
+        .random-box {margin-top: 24px;}        
+        .random-box p {margin-bottom: 12px;}
+
+        .cont-intro {height: 90vh; width: 100%;}
+        .cont-intro .title {font-size: 26px; font-weight: 700; line-height: 1.2;}
+        .cont-intro .desc {font-size: 18px; font-weight: 500; line-height: 1;}
+        .cont-intro img {width: 100%; height: 100%; object-fit: cover; margin-top: 20px;}
+        .cont-wrap {max-width: 900px; margin: 0 auto; display: flex; gap: 10px; justify-content: center; align-items: center;}
+        .cont-box {width:100%; height: 250px; background:rgba(0,0,0,0.8); border-radius: 10px; color: #fff; margin-bottom: 10px;}
+        .cont-wrap .cont-box {width: calc(50% - 10px);}
+        
+    </style>
+    <script>
+      // 로컬/배포 환경 모두 대응: 첫 경로 실패 시 다음 경로로 자동 폴백
+      window.__loadWithFallback = function (type, paths) {
+        return new Promise((resolve, reject) => {
+          let index = 0;
+          const tryLoad = () => {
+            if (index >= paths.length) {
+              reject(new Error(type + " resource load failed"));
+              return;
+            }
+
+            const path = paths[index++];
+            if (type === "css") {
+              const link = document.createElement("link");
+              link.rel = "stylesheet";
+              link.href = path;
+              link.onload = () => resolve(path);
+              link.onerror = tryLoad;
+              document.head.appendChild(link);
+              return;
+            }
+
+            const script = document.createElement("script");
+            script.src = path;
+            script.onload = () => resolve(path);
+            script.onerror = tryLoad;
+            document.head.appendChild(script);
+          };
+
+          tryLoad();
+        });
+      };
+    </script>
+    <script>
+      window.__scrollAssetsReady = Promise.all([
+        window.__loadWithFallback("css", ["../src/scroll-events.css"]),
+        window.__loadWithFallback("js", ["../src/scroll-events.js"]),
+      ]);
+    </script>
+</head>
+<body>
+    
+    <div class="container">
+        <header>
+            <div class="logo"><a href="#">bubble</a></div>
+            <nav>
+                <ul>
+                    <li><a href="#">menu1</a></li>
+                    <li><a href="#">menu2</a></li>
+                    <li><a href="#">menu3</a></li>
+                </ul>
+            </nav>
+        </header>
+        <section>
+            <div class="cont-intro">
+                <h3 class="title">샘플 테스트 페이지입니다.</h3>
+                <p class="desc">더 많은정보를 보려면 아래로 스크롤해주세요.</p>
+                <section class="random-box" id="randomAction">
+                    <div class="card" data-scroll-effect="glass-rise" data-scroll-duration="900">
+                    <h2>randomAction</h2>
+                    <p>random-wrap 내부에서 버블이 자유롭게 튕기는 인터랙션</p>
+                    <div class="random-wrap"></div>                    
+                    </div>
+                </section>
+                
+            </div>
+            <div class="cont-box" data-scroll="glass-rise">0</div>
+            <div class="cont-wrap">                
+                <div class="cont-box" data-scroll="slide-left">2</div>
+                <div class="cont-box" data-scroll="slide-right">3</div>
+            </div>
+        </section>        
+    </div>
+    <footer>        
+        <ul class="foot-wrap">
+            <li><a href="#">사이트맵</a></li>
+            <li><a href="#">문의하기</a></li>
+            <li><a href="#">테스트</a></li>
+        </ul>
+    </footer>
+    <script>
+        window.__scrollAssetsReady.then(() => {
+          const scroll = window.ScrollEvents.create({
+            once: false,
+            resetOnLeave: "both",
+            threshold: 0.12,
+          });
+
+          scroll.init();
+
+          const randomSection = document.getElementById("randomAction");
+          if (randomSection) {
+            initRandomBubbles(randomSection.querySelector(".random-wrap"), 14);
+          }
+
+        }).catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error("[ScrollEvents] 리소스 로드 실패:", error);
+        });
+
+        // random-wrap 내부 버블 튕김 인터랙션
+        function initRandomBubbles(container, count) {
+            if (!container) return;
+
+            const bubbles = [];
+            let rafId = null;
+            let prevTs = 0;
+            let cw = 0;
+            let ch = 0;
+
+            const random = (min, max) => Math.random() * (max - min) + min;
+
+            const palette = [
+            "rgba(120, 206, 255, 0.82)",
+            "rgba(255, 160, 214, 0.78)",
+            "rgba(255, 214, 122, 0.76)",
+            "rgba(138, 255, 198, 0.74)",
+            "rgba(167, 154, 255, 0.7)",
+            ];
+
+            function setupBounds() {
+            const rect = container.getBoundingClientRect();
+            cw = rect.width;
+            ch = rect.height;
+            }
+
+            function makeBubble(index) {
+            const size = random(24, 72);
+            const el = document.createElement("span");
+            el.className = "random-bubble";
+            el.style.width = `${size}px`;
+            el.style.height = `${size}px`;
+            el.style.background = `radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), ${palette[index % palette.length]} 72%)`;
+            el.style.opacity = String(random(0.55, 0.9));
+            container.appendChild(el);
+
+            return {
+                el,
+                r: size / 2,
+                x: random(size / 2, Math.max(size / 2, cw - size / 2)),
+                y: random(size / 2, Math.max(size / 2, ch - size / 2)),
+                vx: random(-120, 120) || 90,
+                vy: random(-120, 120) || -90,
+            };
+            }
+
+            function clampInside(b) {
+            b.x = Math.max(b.r, Math.min(cw - b.r, b.x));
+            b.y = Math.max(b.r, Math.min(ch - b.r, b.y));
+            }
+
+            function onResize() {
+            setupBounds();
+            bubbles.forEach(clampInside);
+            }
+
+            function draw(b) {
+            b.el.style.transform = `translate(${b.x - b.r}px, ${b.y - b.r}px)`;
+            }
+
+            function tick(ts) {
+            if (!prevTs) prevTs = ts;
+            const dt = Math.min((ts - prevTs) / 1000, 0.032);
+            prevTs = ts;
+
+            bubbles.forEach((b) => {
+                b.x += b.vx * dt;
+                b.y += b.vy * dt;
+
+                if (b.x - b.r <= 0) {
+                b.x = b.r;
+                b.vx *= -1;
+                } else if (b.x + b.r >= cw) {
+                b.x = cw - b.r;
+                b.vx *= -1;
+                }
+
+                if (b.y - b.r <= 0) {
+                b.y = b.r;
+                b.vy *= -1;
+                } else if (b.y + b.r >= ch) {
+                b.y = ch - b.r;
+                b.vy *= -1;
+                }
+
+                draw(b);
+            });
+
+            rafId = requestAnimationFrame(tick);
+            }
+
+            setupBounds();
+
+            for (let i = 0; i < count; i += 1) {
+            bubbles.push(makeBubble(i));
+            }
+
+            bubbles.forEach(draw);
+            rafId = requestAnimationFrame(tick);
+            window.addEventListener("resize", onResize);
+
+            // 필요 시 외부에서 정리 가능하도록 핸들 노출
+            container.__randomBubbleController = {
+            destroy() {
+                if (rafId) cancelAnimationFrame(rafId);
+                window.removeEventListener("resize", onResize);
+                container.innerHTML = "";
+            },
+            };
+        }
+    </script>
+</body>
+</html>
