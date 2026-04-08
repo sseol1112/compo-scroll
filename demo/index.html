@@ -45,10 +45,13 @@
     </script>
   </head>
   <body>
-    <div class="wrap">
+    <div class="wrap">      
       <h1 class="page_title a11y">scroll component</h1>
       <section class="section hero">
         <div class="text_box">
+          <div class="fl_right">
+            <div class="bubble"><a href="./sample.html">bubble</a></div>
+          </div>
           <h2 class="title">ScrollEvents Demo</h2>
           <p>아래로 스크롤하면 각 카드에 지정한 효과가 실행됩니다.</p>
         </div>
@@ -125,6 +128,13 @@
     </div>
 
     <script>
+      function init() {
+        const flR = document.querySelector(".fl_right");
+        window.setTimeout(() => {
+          flR.classList.add("on");
+        }, 500);
+      }      
+
       window.__scrollAssetsReady
         .then(() => {
           const scroll = window.ScrollEvents.create({
@@ -138,7 +148,9 @@
         .catch((error) => {
           // eslint-disable-next-line no-console
           console.error("[ScrollEvents] 리소스 로드 실패:", error);
-        });
+      });
+
+      init();
     </script>
   </body>
 </html>

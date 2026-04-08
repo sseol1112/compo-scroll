@@ -7,10 +7,7 @@
     <style>
         
         .container {width:100%; max-width: 1200px; margin: 0 auto; padding: 0 20px;}
-        header {width: 100%; height: 100%; border-bottom: 1px solid #ccc; overflow: hidden; display: flex; justify-content: space-between; align-items: center;}
-        
-        .logo > a {display: block; border-radius: 80px; width: 100%; height: 26px; background: #1791FC; position: relative; color: #fff; padding: 0 10px; text-align: center;}
-        .logo > a::before {content:""; width: 12px; height: 6px; display: block; background: url(../src/img/bubble_arr.png) no-repeat center / 100%; position: absolute; bottom: -5px; left: 10px;}
+        header {width: 100%; height: 100%; border-bottom: 1px solid #ccc; overflow: hidden; display: flex; justify-content: space-between; align-items: center;}            
         header > nav {margin: auto 0;}
         header > nav > ul {display: flex; gap: 10px; margin: 10px 0; align-items: center;}
         header > nav > ul > li > a {display:block; height:26px; border-radius: 80px; background: #F00062; color: #fff; padding: 0 10px; text-align: center; position: relative;}
@@ -22,17 +19,93 @@
         footer .foot-wrap {display: flex; gap: 10px;}
         footer .foot-wrap li a {color: #fff; font-size: 18px; line-height: 1; font-weight: 400; }
     
-        
+        .mouse-box {margin-top: 24px;}
+        .mouse-box p {margin-bottom: 12px;}
         .random-box {margin-top: 24px;}        
         .random-box p {margin-bottom: 12px;}
 
-        .cont-intro {height: 90vh; width: 100%;}
+        .cont-intro {width: 100%; margin-bottom: 10px;}
         .cont-intro .title {font-size: 26px; font-weight: 700; line-height: 1.2;}
         .cont-intro .desc {font-size: 18px; font-weight: 500; line-height: 1;}
         .cont-intro img {width: 100%; height: 100%; object-fit: cover; margin-top: 20px;}
-        .cont-wrap {max-width: 900px; margin: 0 auto; display: flex; gap: 10px; justify-content: center; align-items: center;}
-        .cont-box {width:100%; height: 250px; background:rgba(0,0,0,0.8); border-radius: 10px; color: #fff; margin-bottom: 10px;}
+        .cont-wrap {display: flex; gap: 10px; justify-content: center; align-items: center;}
+        .cont-box {width:100%; height: 250px; border-radius: 10px; color: #000; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;}
         .cont-wrap .cont-box {width: calc(50% - 10px);}
+
+        #randomAction .random-wrap {
+            position: relative;
+            height: min(56vw, 360px);
+            min-height: 240px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: radial-gradient(circle at 20% 20%, #1f2937 0%, #111827 45%, #0a1222 100%);
+            box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.08), 0 10px 24px rgba(0, 0, 0, 0.25);
+        }
+        #mouseAction .mouse-wrap {
+            position: relative;
+            height: min(44vw, 280px);
+            min-height: 220px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #f6f8ff 0%, #e8f2ff 100%);
+            border: 1px solid #dbe7ff;
+            box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.85), 0 10px 24px rgba(27, 60, 112, 0.12);
+        }
+
+        .random-bubble {
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 999px;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        .pointer-bubble {
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 20;
+            pointer-events: none;
+            width: max-content;
+            height: 43px;
+            padding: 0 16px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 14px 24px rgba(0, 0, 0, 0.24); 
+            background: #5db3ff;                        
+            opacity: 0;
+            transform: translate(-9999px, -9999px);
+            transition: opacity 0.24s ease;
+        }
+        .pointer-bubble::after {
+            content: "";
+            position: absolute;
+            left: 14px;
+            bottom: -8px;
+            width: 14px;
+            height: 10px;
+            background: #5db3ff;
+            clip-path: polygon(35% 0, 100% 0, 50% 100%);
+            transform: rotate(15deg);
+        }
+
+        .pointer-bubble.on {
+            opacity: 1;
+        }
+
+        .pointer-bubble span {
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         
     </style>
     <script>
@@ -79,7 +152,7 @@
     
     <div class="container">
         <header>
-            <div class="logo"><a href="#">bubble</a></div>
+            <div class="bubble"><a href="./index.html">home</a></div>
             <nav>
                 <ul>
                     <li><a href="#">menu1</a></li>
@@ -92,8 +165,18 @@
             <div class="cont-intro">
                 <h3 class="title">샘플 테스트 페이지입니다.</h3>
                 <p class="desc">더 많은정보를 보려면 아래로 스크롤해주세요.</p>
+                
+                <section class="mouse-box" id="mouseAction">
+                    <div class="card" data-scroll-effect="pop" data-scroll-duration="720">
+                        <h2>mouseAction</h2>
+                        <p>mouse-wrap 내부에서 마우스를 따라다니는 말풍선</p>
+                        <div class="mouse-wrap"></div>
+                    </div>
+                </section>
+
+
                 <section class="random-box" id="randomAction">
-                    <div class="card" data-scroll-effect="glass-rise" data-scroll-duration="900">
+                    <div class="card" data-scroll-effect="pop" data-scroll-duration="900">
                     <h2>randomAction</h2>
                     <p>random-wrap 내부에서 버블이 자유롭게 튕기는 인터랙션</p>
                     <div class="random-wrap"></div>                    
@@ -101,18 +184,18 @@
                 </section>
                 
             </div>
-            <div class="cont-box" data-scroll="glass-rise">0</div>
+            <div class="cont-box card" data-scroll="glass-rise">glass-rise</div>
             <div class="cont-wrap">                
-                <div class="cont-box" data-scroll="slide-left">2</div>
-                <div class="cont-box" data-scroll="slide-right">3</div>
+                <div class="cont-box card" data-scroll="slide-left">slide-left</div>
+                <div class="cont-box card" data-scroll="slide-right">slide-right</div>
             </div>
         </section>        
     </div>
     <footer>        
         <ul class="foot-wrap">
-            <li><a href="#">사이트맵</a></li>
-            <li><a href="#">문의하기</a></li>
-            <li><a href="#">테스트</a></li>
+            <li><a href="#">footer1</a></li>
+            <li><a href="#">footer2</a></li>
+            <li><a href="#">footer3</a></li>
         </ul>
     </footer>
     <script>
@@ -127,7 +210,14 @@
 
           const randomSection = document.getElementById("randomAction");
           if (randomSection) {
-            initRandomBubbles(randomSection.querySelector(".random-wrap"), 14);
+            const randomWrap = randomSection.querySelector(".random-wrap");
+            initRandomBubbles(randomWrap, 14);
+          }
+
+          const mouseSection = document.getElementById("mouseAction");
+          if (mouseSection) {
+            const mouseWrap = mouseSection.querySelector(".mouse-wrap");
+            initPointerBubble(mouseWrap);
           }
 
         }).catch((error) => {
@@ -148,11 +238,11 @@
             const random = (min, max) => Math.random() * (max - min) + min;
 
             const palette = [
-            "rgba(120, 206, 255, 0.82)",
-            "rgba(255, 160, 214, 0.78)",
-            "rgba(255, 214, 122, 0.76)",
-            "rgba(138, 255, 198, 0.74)",
-            "rgba(167, 154, 255, 0.7)",
+            "rgb(255, 120, 0)",
+            "rgb(255, 160, 214)",
+            "rgb(255, 214, 122)",
+            "rgb(138, 255, 198)",
+            "rgb(167, 154, 255)",
             ];
 
             function setupBounds() {
@@ -243,6 +333,122 @@
                 window.removeEventListener("resize", onResize);
                 container.innerHTML = "";
             },
+            };
+        }
+
+        // mouse-wrap 내부에서 마우스를 따라다니는 말풍선 + 공 반응 모션
+        function initPointerBubble(container) {
+            if (!container) return;
+
+            const bubble = document.createElement("div");
+            bubble.className = "pointer-bubble";
+            bubble.innerHTML = '<span>Catch me If you can!</span>';
+            container.appendChild(bubble);
+            
+
+            let cw = 0;
+            let ch = 0;
+            let tx = 0;
+            let ty = 0;
+            let x = 0;
+            let y = 0;
+            let mvx = 0;
+            let mvy = 0;
+            let bvx = 0;
+            let bvy = 0;
+            let entered = false;
+            let rafId = null;
+
+            const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+            function measure() {
+                const rect = container.getBoundingClientRect();
+                cw = rect.width;
+                ch = rect.height;
+            }
+
+            function placeAtCenter() {
+                const bw = bubble.offsetWidth || 128;
+                const bh = bubble.offsetHeight || 56;
+                tx = (cw - bw) / 2;
+                ty = (ch - bh) / 2;
+                x = tx;
+                y = ty;
+            }
+
+            function onPointerEnter(e) {
+                measure();
+                const rect = container.getBoundingClientRect();
+                const px = e.clientX - rect.left;
+                const py = e.clientY - rect.top;
+                const bw = bubble.offsetWidth || 128;
+                const bh = bubble.offsetHeight || 56;
+
+                tx = clamp(px + 14, 0, Math.max(0, cw - bw));
+                ty = clamp(py - bh - 10, 0, Math.max(0, ch - bh));
+                x = tx;
+                y = ty;
+                entered = true;
+                bubble.classList.add("on");
+            }
+
+            function onPointerMove(e) {
+                if (!entered) return;
+
+                const rect = container.getBoundingClientRect();
+                const px = e.clientX - rect.left;
+                const py = e.clientY - rect.top;
+                const bw = bubble.offsetWidth || 128;
+                const bh = bubble.offsetHeight || 56;
+
+                const nextTx = clamp(px + 14, 0, Math.max(0, cw - bw));
+                const nextTy = clamp(py - bh - 10, 0, Math.max(0, ch - bh));
+
+                mvx += nextTx - tx;
+                mvy += nextTy - ty;
+                tx = nextTx;
+                ty = nextTy;
+            }
+
+            function onPointerLeave() {
+                entered = false;
+                bubble.classList.remove("on");
+            }
+
+            function onResize() {
+                measure();
+                placeAtCenter();
+            }
+
+            function tick() {
+                // 말풍선은 타겟 좌표를 부드럽게 따라감
+                x += (tx - x) * 0.2;
+                y += (ty - y) * 0.2;
+                bubble.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+    
+                rafId = requestAnimationFrame(tick);
+            }
+
+            measure();
+            placeAtCenter();
+            bubble.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+            container.addEventListener("pointerenter", onPointerEnter);
+            container.addEventListener("pointermove", onPointerMove);
+            container.addEventListener("pointerleave", onPointerLeave);
+            window.addEventListener("resize", onResize);
+            rafId = requestAnimationFrame(tick);
+
+            container.__pointerBubbleController = {
+                destroy() {
+                    if (rafId) cancelAnimationFrame(rafId);
+                    container.removeEventListener("pointerenter", onPointerEnter);
+                    container.removeEventListener("pointermove", onPointerMove);
+                    container.removeEventListener("pointerleave", onPointerLeave);
+                    window.removeEventListener("resize", onResize);
+                    bubble.remove();
+                },
             };
         }
     </script>
