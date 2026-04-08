@@ -2,6 +2,7 @@
   --bg: #f6f8fb;
   --card: #ffffff;
   --text: #1f2937;
+  --se-slide-distance: clamp(28px, 8vw, 72px);
 }
 * {
   box-sizing: border-box;
@@ -74,17 +75,17 @@ p {
 
 .se-slide-left {
   opacity: 0;
-  transform: translateX(-999px);
+  transform: translate3d(calc(-1 * var(--se-slide-distance)), 0, 0);
 }
 
 .se-slide-right {
   opacity: 0;
-  transform: translateX(999px);
+  transform: translate3d(var(--se-slide-distance), 0, 0);
 }
 
 .se-slide-in {
   opacity: 1;
-  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
 }
 
 .se-zoom-in {
