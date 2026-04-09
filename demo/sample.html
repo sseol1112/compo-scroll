@@ -51,6 +51,16 @@
             border: 1px solid #dbe7ff;
             box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.85), 0 10px 24px rgba(27, 60, 112, 0.12);
         }
+        #mouseAction2 .mouse-wrap {
+            position: relative;
+            height: min(44vw, 280px);
+            min-height: 220px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #edfbff 0%, #ace0ec 100%);
+            border: 1px solid #88e7ff;
+            box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.92), 0 10px 24px rgba(35, 111, 134, 0.14);
+        }
 
         .random-bubble {
             position: absolute;
@@ -106,6 +116,52 @@
             align-items: center;
             justify-content: center;
         }
+
+        .face-track {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: min(260px, 68vw);
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #1791FC 0%, #88e7ff 62%, #7dccf1 100%);
+            box-shadow: 0 10px 26px rgba(38, 120, 196, 0.22);
+        }
+
+        .face-track .eye {
+            position: absolute;
+            top: 40%;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: inset 0 -5px 0 rgba(240, 240, 240, 0.7);
+            overflow: hidden;
+        }
+        .face-track .eye.left { left: 22%; }
+        .face-track .eye.right { right: 22%; }
+
+        .face-track .pupil {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            background: #1f2937;
+        }
+        .face-track .pupil::after {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+        }
         
     </style>
     <script>
@@ -143,8 +199,8 @@
     </script>
     <script>
       window.__scrollAssetsReady = Promise.all([
-        window.__loadWithFallback("css", ["../src/scroll-events.css"]),
-        window.__loadWithFallback("js", ["../src/scroll-events.js"]),
+        window.__loadWithFallback("css", ["./scroll-events.css", "../src/scroll-events.css"]),
+        window.__loadWithFallback("js", ["./scroll-events.js", "../src/scroll-events.js"]),
       ]);
     </script>
 </head>
@@ -170,6 +226,14 @@
                     <div class="card" data-scroll-effect="pop" data-scroll-duration="720">
                         <h2>mouseAction</h2>
                         <p>mouse-wrap 내부에서 마우스를 따라다니는 말풍선</p>
+                        <div class="mouse-wrap"></div>
+                    </div>
+                </section>
+
+                <section class="mouse-box" id="mouseAction2">
+                    <div class="card" data-scroll-effect="pop" data-scroll-duration="720">
+                        <h2>mouseAction2</h2>
+                        <p>mouse-wrap 내부에서 마우스 움직임에따라 캐릭터얼굴의 눈이움직이는 인터랙션</p>
                         <div class="mouse-wrap"></div>
                     </div>
                 </section>
@@ -211,13 +275,19 @@
           const randomSection = document.getElementById("randomAction");
           if (randomSection) {
             const randomWrap = randomSection.querySelector(".random-wrap");
-            initRandomBubbles(randomWrap, 14);
+            initRandomBubbles(randomWrap, 8);
           }
 
           const mouseSection = document.getElementById("mouseAction");
           if (mouseSection) {
             const mouseWrap = mouseSection.querySelector(".mouse-wrap");
             initPointerBubble(mouseWrap);
+          }
+
+          const mouseSection2 = document.getElementById("mouseAction2");
+          if (mouseSection2) {
+            const mouseWrap2 = mouseSection2.querySelector(".mouse-wrap");
+            initEyeTracker(mouseWrap2);
           }
 
         }).catch((error) => {
@@ -238,11 +308,11 @@
             const random = (min, max) => Math.random() * (max - min) + min;
 
             const palette = [
-            "rgb(255, 120, 0)",
-            "rgb(255, 160, 214)",
-            "rgb(255, 214, 122)",
-            "rgb(138, 255, 198)",
-            "rgb(167, 154, 255)",
+            "rgba(255, 120, 0, 0.8)",
+            "rgba(255, 160, 214, 0.8)",
+            "rgba(255, 214, 122, 0.8)",
+            "rgba(138, 255, 198, 0.8)",
+            "rgba(167, 154, 255, 0.8)",
             ];
 
             function setupBounds() {
@@ -336,7 +406,7 @@
             };
         }
 
-        // mouse-wrap 내부에서 마우스를 따라다니는 말풍선 + 공 반응 모션
+        // mouse-wrap 내부에서 마우스를 따라다니는 말풍선
         function initPointerBubble(container) {
             if (!container) return;
 
@@ -451,6 +521,76 @@
                 },
             };
         }
+
+        // mouseAction2: 마우스 위치를 따라 눈동자가 움직이는 인터랙션
+        function initEyeTracker(container) {
+            if (!container) return;
+
+            container.innerHTML = `
+              <div class="face-track">
+                <div class="eye left"><span class="pupil"></span></div>
+                <div class="eye right"><span class="pupil"></span></div>
+              </div>
+            `;
+
+            const face = container.querySelector(".face-track");
+            const pupils = Array.from(container.querySelectorAll(".pupil"));
+            const maxOffset = 9;
+
+            function updateEyes(clientX, clientY) {
+                const faceRect = face.getBoundingClientRect();
+                const cx = faceRect.left + faceRect.width / 2;
+                const cy = faceRect.top + faceRect.height / 2;
+
+                const dx = clientX - cx;
+                const dy = clientY - cy;
+                const distance = Math.hypot(dx, dy) || 1;
+
+                const ox = (dx / distance) * Math.min(maxOffset, distance / 14);
+                const oy = (dy / distance) * Math.min(maxOffset, distance / 14);
+
+                pupils.forEach((pupil) => {
+                    pupil.style.transform = `translate(calc(-50% + ${ox}px), calc(-50% + ${oy}px))`;
+                });
+            }
+
+            function resetEyes() {
+                pupils.forEach((pupil) => {
+                    pupil.style.transform = "translate(-50%, -50%)";
+                });
+            }
+
+            function onPointerMove(e) {
+                updateEyes(e.clientX, e.clientY);
+            }
+
+            container.addEventListener("pointermove", onPointerMove);
+            container.addEventListener("pointerleave", resetEyes);
+
+            container.__eyeTrackerController = {
+                destroy() {
+                    container.removeEventListener("pointermove", onPointerMove);
+                    container.removeEventListener("pointerleave", resetEyes);
+                    container.innerHTML = "";
+                },
+            };
+            
+            document.querySelector(".face-track").style.opacity = 0;
+
+        }
+        function avartarFaceTest(){
+            const avartarFace = document.querySelector(".face-track");
+
+            avartarFace.style.opacity = 1;
+            avartarFace.style.transition = "1s";
+        }
+
+
+        window.addEventListener('load', function() {
+            setTimeout(function(){
+                avartarFaceTest();
+            },1000)
+        });       
     </script>
 </body>
 </html>
