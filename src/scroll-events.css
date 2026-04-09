@@ -46,7 +46,7 @@ p {
 .fl_right {display: flex; justify-content: flex-end; opacity: 0;}
 .fl_right.on {opacity: 1; transition: 1s;}
 .bubble > a {display: block; border-radius: 80px; width: 100%; max-width: 120px; height: 26px; background: #1791FC; position: relative; color: #fff; padding: 0 10px; text-align: center;}
-.bubble > a::before {content:""; width: 12px; height: 6px; display: block; background: url(../demo/img/bubble_arr.png) no-repeat center / 100%; position: absolute; bottom: -5px; left: 10px;}
+.bubble > a::before {content:""; width: 12px; height: 6px; display: block; background: url(/img/bubble_arr.png) no-repeat center / 100%; position: absolute; bottom: -5px; left: 10px;}
 
 /* 웹접근성용 hidden text (screen-reader only) */
 .a11y {
